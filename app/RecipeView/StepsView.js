@@ -61,7 +61,7 @@ export default class StepsView extends React.Component {
 
 
         return (
-            <View>
+            <View style={styles.container}>
                 <ScrollView
                     horizontal={true}
                     pagingEnabled={true}
@@ -76,15 +76,18 @@ export default class StepsView extends React.Component {
                                 style={{
                                     flex: 1,
                                     width: screenWidth,
-                                    height: screenHeight
+                                    height: screenHeight,
+                                    backgroundcolor: 'tomato'
                                 }}
                             >
                                 <Text style={styles.header}>Step Number: {item.Sorder}</Text>
-                                <Text style={styles.container}>Step Description: {item.content}</Text>
+                                <Text style={styles.titletext}>Step Description: </Text>
+                                <Text style={styles.text}>{item.content}</Text>
 
 
                                 { // If last page we want to render done button
                                     (i === this.state.data.length - 1) ? (<Button
+                                        color = 'darksalmon'
                                         title="Done" onPress={() => this.props.navigation.pop()}
                                     />) : (<View></View>)
 
@@ -109,20 +112,27 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        backgroundColor: 'tomato',
     },
     welcome: {
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
     },
-    list: {
-        flex: 1,
-        margin: 10
+    titletext: {
+        fontSize: 22,
+        margin: 2,
+        color: 'papayawhip',
     },
+    text: {
+        fontSize: 20,
+        margin: 2,
+        color: 'moccasin',
+        },
     header: {
         textAlign: 'center',
-        fontSize: 20
+        fontSize: 25,
+        color: 'firebrick',
     }
 });
 
