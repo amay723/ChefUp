@@ -1,0 +1,11 @@
+node_modules/**/*
+.expo/*
+npm-debug.*
+*.jks
+*.p12
+*.key
+*.mobileprovision
+
+ChefUpApi/node_modules/**/*
+ChefUpApi/db_connection.js
+*~
