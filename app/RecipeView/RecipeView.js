@@ -15,6 +15,8 @@ export default class RecipeView extends React.Component {
 
         this.state = {
             data: ds,
+            ingredients: [],
+            tools: [],
             id: this.id
         }
     }
@@ -41,7 +43,9 @@ export default class RecipeView extends React.Component {
             .then((response) => response.json())
             .then((response) => {
                 this.setState({
-                    data: this.state.data.cloneWithRows(response)
+                    data: this.state.data.cloneWithRows(response),
+                    ingredients: [...response][0].total_ingredients.split(', '),
+                    tools: [...response][0].tools.split(', ')
                 });
             })
             .catch((error) => {
@@ -61,16 +65,25 @@ export default class RecipeView extends React.Component {
 
         const { id, Rname, category, total_ingredients, difficulty, tools, info, Rtime} = item;
 
+
         return (
             <View style={styles.container}>
                 <Text style={styles.title}> {Rname}</Text>
                 <Text style={styles.desctext}>{info}</Text>
                 <Text style={styles.space}> </Text>
                 <Text style={styles.titletext}>Total Ingredients: </Text>
-                <Text style={styles.text}> {total_ingredients} </Text>
+                {
+                    this.state.ingredients.map( (item, idx) => {
+                        return (<Text key={idx} style={styles.text}>{item}</Text>);
+                    })
+                }
                 <Text style={styles.space}> </Text>
                 <Text style={styles.titletext}>Tools: </Text>
-                <Text style={styles.text}>{tools}</Text>
+                {
+                    this.state.tools.map( (item, idx) => {
+                        return (<Text key={idx} style={styles.text}>{item}</Text>);
+                    })
+                }
                 <Text style={styles.space}> </Text>
                 <Text style={styles.text}>Difficulty: {difficulty} </Text>
                 <Text style={styles.space}> </Text>
