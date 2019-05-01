@@ -1,6 +1,7 @@
 import React from 'react';
-import {AppRegistry, StyleSheet, Text, View, ScrollView, Alert, Button, Dimensions} from 'react-native';
+import {AppRegistry, StyleSheet, Text, View, ScrollView, Alert, Button, Dimensions, Image} from 'react-native';
 
+const reader = new FileReader();
 
 export default class StepsView extends React.Component {
 
@@ -70,10 +71,13 @@ export default class StepsView extends React.Component {
                 {
                     this.state.data.map( (item, i) => {
 
+                        //console.log(reader.readAsText(item.gif_URL));
+
                         return (
                             <View
                                 key={i}
                                 style={{
+                                    alignItems: 'center',
                                     flex: 1,
                                     width: screenWidth,
                                     height: screenHeight,
@@ -84,11 +88,19 @@ export default class StepsView extends React.Component {
                                 <Text style={styles.titletext}>Step Description: </Text>
                                 <Text style={styles.text}>{item.content}</Text>
 
+                                <Image
+                                    style={{
+                                        resizeMode: 'contain',
+                                        width: 300,
+                                        height: 300
+                                    }}
+                                    source={{uri: item.gif_URL}}
+                                />
 
                                 { // If last page we want to render done button
                                     (i === this.state.data.length - 1) ? (<Button
                                         color = 'darksalmon'
-                                        title="Done" onPress={() => this.props.navigation.pop()}
+                                        title="Done" onPress={() => this.props.navigation.pop(2)}
                                     />) : (<View></View>)
 
                                 }

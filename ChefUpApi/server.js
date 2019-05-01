@@ -44,6 +44,19 @@ app.post('/recipeById', function(req, res){
     });
 });
 
+
+app.get('/ingredientsById', function(req, res){
+    var id = req.body.id;
+    var query = 'select * from ingredients where Recipe_ID = ?';
+    console.log(query);
+    con.query(query, [id], function(error, rows, fields){
+	if(error) console.log(error);
+	else {
+	    res.send(rows);
+	}
+    });
+});
+
 app.post('/stepsById', function(req, res){
     var id = req.body.id;
     var query = 'select * from Show_Steps where Recipe_ID = ?';

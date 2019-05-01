@@ -18,13 +18,13 @@ export default class RecipeView extends React.Component {
             ingredients: [],
             tools: [],
             id: this.id
-        }
+        };
+
     }
 
     componentDidMount() {
 
         this.fetchData();
-
     }
 
     fetchData() {
@@ -60,6 +60,35 @@ export default class RecipeView extends React.Component {
 
     }
 
+    fetchIngredients() {
+        // POST request for current recipeId's info
+        fetch('http://blue.cs.sonoma.edu:8142/ingredientsById', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: this.state.id
+            }),
+        })
+            .then((response) => response.json())
+            .then((response) => {
+                this.setState({
+                    ingredients: [...response]
+                });
+            })
+            .catch((error) => {
+                Alert.alert(
+                    'Database Connection Error',
+                    'fetch request failed',
+                    [
+                        {text: 'OK', onPress: () => this.props.navigation.pop() }
+                    ]
+                )
+            });
+    }
+
 
     renderRow(item, sectionId, rowId, highlightRow) {
 
@@ -92,26 +121,50 @@ export default class RecipeView extends React.Component {
         )
     }
 
+
+
     render() {
 
-        return (
-            <View style={styles.container}>
-                <ListView
-                    dataSource={this.state.data}
-                    renderRow={this.renderRow.bind(this)}
+        if(0) {
+            return (
+                <View style={styles.container}>
+                    <ListView
+                        dataSource={this.state.data}
+                        renderRow={this.renderRow.bind(this)}
 
-                />
+                    />
 
-                <Button
-                    title="Show Steps"
-                    color = 'darksalmon'
-                    onPress={() => this.props.navigation.push('Steps', {
-                        recipeId: this.state.id
-                    })}
+                    <Button
+                        title="Show Steps"
+                        color='darksalmon'
+                        onPress={() => this.props.navigation.push('Steps', {
+                            recipeId: this.state.id
+                        })}
 
-                />
-            </View>
-        );
+                    />
+                </View>
+            );
+        }
+        else {
+            return (
+                <View style={styles.container}>
+                    <ListView
+                        dataSource={this.state.data}
+                        renderRow={this.renderRow.bind(this)}
+
+                    />
+
+                    <Button
+                        title="Show Steps"
+                        color='darksalmon'
+                        onPress={() => this.props.navigation.push('Steps', {
+                            recipeId: this.state.id
+                        })}
+
+                    />
+                </View>
+            );
+        }
     }
 }
 
