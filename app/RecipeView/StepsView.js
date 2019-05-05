@@ -71,8 +71,6 @@ export default class StepsView extends React.Component {
                 {
                     this.state.data.map( (item, i) => {
 
-                        //console.log(reader.readAsText(item.gif_URL));
-
                         return (
                             <View
                                 key={i}
@@ -96,11 +94,17 @@ export default class StepsView extends React.Component {
                                     }}
                                     source={{uri: item.gif_URL}}
                                 />
+                                <Button
+                                    color='darksalmon'
+                                    title="Next"
+                                    onPress={() => scrollTo({x: x+50, y: y+50, animated: true})}
+                                />
 
                                 { // If last page we want to render done button
                                     (i === this.state.data.length - 1) ? (<Button
                                         color = 'darksalmon'
-                                        title="Done" onPress={() => this.props.navigation.pop(2)}
+                                        title="Done"
+                                        onPress={() => this.props.navigation.pop(2)}
                                     />) : (<View></View>)
 
                                 }

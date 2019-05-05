@@ -1,37 +1,128 @@
 import React from 'react';
-import { AppRegistry, StyleSheet, Text, View, ScrollView, Alert } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, ScrollView, Alert, Image } from 'react-native';
 import { SearchBar, ListItem } from 'react-native-elements';
+
+import {
+    saveVegan,
+    getVegan,
+    createVegan,
+    saveGlutenFree,
+    getGlutenFree,
+    createGlutenFree,
+    saveLactoOvoVegetarian,
+    getLactoOvoVegetarian,
+    createLactoOvoVegetarian,
+    saveLactoVegetarian,
+    getLactoVegetarian,
+    createLactoVegetarian,
+    saveOvoVegetarian,
+    getOvoVegetarian,
+    createOvoVegetarian
+} from  '../DietaryRestrictions/SetGetDietary.js'
+
+// React likes each rendered item to have a unique key
+let uniqueSeed = 0;
+function nextUniqueKey() {
+    return uniqueSeed += 1;
+}
 
 export default class RecipeMain extends React.Component {
 
     constructor(props) {
+
         super(props);
 
         this.state = {
-            data: [],
-            search: ''
-        }
+            recipes: [],
+            search: '',
+            dietary: [],
+            isVegan: false,
+            isGlutenFree: false,
+            isLactoOvoVegetarian: false,
+            isLactoVegetarian: false,
+            isOvoVegetarian: false,
+            loading: false // depending on recipe load times set to true to use loading screen
+        };
+
+        // All deals with checking currently set dietary filters
+        this.saveVegan = saveVegan.bind(this);
+        this.getVegan = getVegan.bind(this);
+        this.createVegan = createVegan.bind(this);
+
+        this.saveGlutenFree = saveGlutenFree.bind(this);
+        this.getGlutenFree = getGlutenFree.bind(this);
+        this.createGlutenFree = createGlutenFree.bind(this);
+
+        this.saveLactoOvoVegetarian = saveLactoOvoVegetarian.bind(this);
+        this.getLactoOvoVegetarian = getLactoOvoVegetarian.bind(this);
+        this.createLactoOvoVegetarian = createLactoOvoVegetarian.bind(this);
+
+        this.saveLactoVegetarian = saveLactoVegetarian.bind(this);
+        this.getLactoVegetarian = getLactoVegetarian.bind(this);
+        this.createLactoVegetarian = createLactoVegetarian.bind(this);
+
+        this.saveOvoVegetarian = saveOvoVegetarian.bind(this);
+        this.getOvoVegetarian = getOvoVegetarian.bind(this);
+        this.createOvoVegetarian = createOvoVegetarian.bind(this);
     }
 
     componentDidMount() {
 
-        this.fetchData();
+        // Get device's current filters
+        this.getVegan();
+        this.getGlutenFree();
+        this.getLactoOvoVegetarian();
+        this.getLactoVegetarian();
+        this.getOvoVegetarian();
 
+        // Fetch recipe data
+        this.fetchRecipes();
+
+    }
+
+    // If page is reloaded will force the reload screen to display instead of empty page with search bar
+    componentWillUnmount() {
+        this.setState({
+            loading: true
+        })
     }
 
     updateSearch = search => {
         this.setState({ search });
     };
 
-    fetchData() {
-
+    fetchRecipes() {
         fetch('http://blue.cs.sonoma.edu:8142/AllRecipes')
-            .then((response) => response.json())
-            .then((response) => {
+            .then((recipeData) => recipeData.json())
+            .then((recipeData) => {
+
                 this.setState({
-                    data: [...response]
+                    recipes: [...recipeData]
                 });
+
             })
+            .then(
+
+                fetch('http://blue.cs.sonoma.edu:8142/allDietary')
+                    .then((filterData) => filterData.json())
+                    .then((filterData) => {
+
+                        this.setState({
+                            dietary: [...filterData],
+                            loading: false // only render the full page when we have all the data
+                        });
+
+                    })
+                    .catch((error) => {
+                        Alert.alert(
+                            'Database Connection Error',
+                            'fetch request failed',
+                            [
+                                {text: 'OK', onPress: () => this.props.navigation.pop() }
+                            ]
+                        )
+                    })
+            )
             .catch((error) => {
                 Alert.alert(
                     'Database Connection Error',
@@ -49,35 +140,94 @@ export default class RecipeMain extends React.Component {
         });
     }
 
+    checkFilter(id, type) {
+
+        // We find a matching item from our recipe list and our dietary filter list (item.id === id)
+        // and check to see if that item has a tag that we are looking for. If the tag is not found
+        // (a return of undefined) the item does not match our dietary filters
+
+        return this.state.dietary.find( (item) => {
+                return item.id === id && item.Dname === type
+            }) !== undefined;
+
+    }
+
     render() {
+
+        if( this.state.loading ) {
+            return (
+                <View style={styles.container}>
+                    <Text>Please wait while your results load</Text>
+                    <Image
+                        style={{
+                            resizeMode: 'contain',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: 50,
+                            height: 50
+                        }}
+                        source={require('../images/loading.gif')}
+                    />
+                </View>
+            );
+        }
 
         return (
             <View style={styles.container}>
                 <SearchBar
-                    placeholder="Type Here..."
+                    placeholder="Search Recipes..."
                     onChangeText={this.updateSearch}
                     value={this.state.search}
                 />
-                <Text style={styles.welcome}>Recipes</Text>
+                <Text style={styles.welcome}>Recipes
+                    <Text style={{fontSize: 10}}>
+                    { this.state.isVegan ? ', Vegan' : "" }
+                    { this.state.isGlutenFree ? ', Gluten-Free' : "" }
+                    { this.state.isLactoOvoVegetarian ? ', LactoOvoVegetarian' : "" }
+                    { this.state.isLactoVegetarian ? ', LactoVegetarian' : "" }
+                    { this.state.isOvoVegetarian ? ', OvoVegetarian' : "" }
+                    </Text>
+                </Text>
                 <ScrollView>
                 {
-                   this.state.data.map( (l, i) => {
+                   this.state.recipes.map( (l, i) => {
 
                        // Lowercase allows for better search results
-                       let sname = l.Rname.toLowerCase();
-                       let scategory = l.category.toLowerCase();
-                       let s = this.state.search.toLowerCase();
+                       let sname = l.Rname.toLowerCase();           // Current item Recipe Name
+                       let scategory = l.category.toLowerCase();    // Current item Category
+                       let s = this.state.search.toLowerCase();     // Current search term
 
-                       // Search for item in list and display if found
+                       // Search for item (by name and category) in list and display if found
                        let found = (sname.search(s) !== -1) || (scategory.search(s) !== -1);
                        // If search is empty display all
                        found |= this.state.search.length === 0;
 
-                       if (found) {
+
+                       ////////// Check all set filters to see if we should display the item //////////
+                       let showFromFilter = true;
+
+                       if( this.state.isVegan ) {
+                           showFromFilter = this.checkFilter(l.id, 'Vegan');
+                       }
+                       // Also add an early break out if any of the previous filters return false
+                       if( showFromFilter && this.state.isGlutenFree) {
+                           showFromFilter = this.checkFilter(l.id, 'Gluten-free');
+                       }
+                       if( showFromFilter && this.state.isLactoOvoVegetarian) {
+                           showFromFilter = this.checkFilter(l.id, 'Lacto-Ovo Vegetarian');
+                       }
+                       if( showFromFilter && this.state.isLactoVegetarian) {
+                           showFromFilter = this.checkFilter(l.id, 'Lacto Vegetarian');
+                       }
+                       if( showFromFilter && this.state.isOvoVegetarian) {
+                           showFromFilter = this.checkFilter(l.id, 'Ovo Vegetarian');
+                       }
+
+                       if (found && showFromFilter) {
                            return (
                                <ListItem
                                    style={styles.list}
-                                   key={i}
+                                   key={nextUniqueKey()}
                                    topDivider={true}
                                    leftAvatar={{source: {uri: 'https://media.asicdn.com/images/jpgo/25390000/25391162.jpg'}}}
                                    title={l.Rname}
@@ -87,7 +237,7 @@ export default class RecipeMain extends React.Component {
                                />
                            );
                        }
-                       return (<View></View>);
+
                    })
                 }
                 </ScrollView>
@@ -101,15 +251,11 @@ export default class RecipeMain extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        //justifyContent: 'center',
-        //alignItems: 'center',
         backgroundColor: 'tomato'
     },
     welcome: {
         fontSize: 25,
-        color: 'firebrick',
-        textAlign: 'center',
-        margin: 10,
+        backgroundColor: 'tomato'
     },
     list: {
         flex: 2,

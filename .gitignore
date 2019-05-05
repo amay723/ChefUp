@@ -9,3 +9,5 @@ npm-debug.*
 ChefUpApi/node_modules/**/*
 ChefUpApi/db_connection.js
 *~
+
+**/.DS_Store

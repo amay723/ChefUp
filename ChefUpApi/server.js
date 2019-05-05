@@ -24,7 +24,9 @@ con.connect(function(error) {
 });
 
 app.get('/AllRecipes', function(req, res){
-    con.query('select * from Recipe', function(error, rows, fields){
+    var query = 'select * from Recipe';
+    console.log(query);
+    con.query(query, function(error, rows, fields){
 	if(error) console.log(error);
 	else {
 	    res.send(rows);
@@ -62,6 +64,18 @@ app.post('/stepsById', function(req, res){
     var query = 'select * from Show_Steps where Recipe_ID = ?';
     console.log(query);
     con.query(query, [id], function(error, rows, fields){
+	if(error) console.log(error);
+	else {
+	    res.send(rows);
+	}
+    });
+});
+
+app.get('/allDietary', function(req, res){
+
+    var query = 'select id, Dname from recipe_test order by id';
+    console.log(query);
+    con.query(query, function(error, rows, fields){
 	if(error) console.log(error);
 	else {
 	    res.send(rows);

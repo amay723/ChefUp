@@ -8,7 +8,6 @@ import StepScreen from './app/RecipeView/StepsView'
 import AboutScreen from './app/About/About'
 import DietaryScreen from './app/DietaryRestrictions/DietaryRestrictions'
 
-
 class HomeScreen extends React.Component {
     render() {
         return (
