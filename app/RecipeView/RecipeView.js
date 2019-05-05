@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppRegistry, StyleSheet, Text, View, ListView, Alert, Button } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, ScrollView, Alert, Button } from 'react-native';
 
 
 export default class RecipeView extends React.Component {
@@ -10,21 +10,21 @@ export default class RecipeView extends React.Component {
         // Get ID passed from RecipeMain. If not found use default value "NO-ID"
         this.id = this.props.navigation.getParam('recipeId', 'NO-ID');
 
-        // Initialize dataset
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
         this.state = {
-            data: ds,
+            data: [],
             ingredients: [],
             tools: [],
-            id: this.id
+            extra: false
         };
+
+        this.renderData = this.renderData.bind(this);
 
     }
 
     componentDidMount() {
 
         this.fetchData();
+
     }
 
     fetchData() {
@@ -37,18 +37,21 @@ export default class RecipeView extends React.Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id: this.state.id
+                id: this.id
             }),
         })
             .then((response) => response.json())
             .then((response) => {
                 this.setState({
-                    data: this.state.data.cloneWithRows(response),
+                    data: [...response],
                     ingredients: [...response][0].total_ingredients.split(', '),
                     tools: [...response][0].tools.split(', ')
                 });
             })
+            .then( this.fetchIngredients() )
             .catch((error) => {
+            console.log('error in first');
+            console.log(error);
                 Alert.alert(
                     'Database Connection Error',
                     'fetch request failed',
@@ -60,6 +63,7 @@ export default class RecipeView extends React.Component {
 
     }
 
+    // Only for foods with extra info
     fetchIngredients() {
         // POST request for current recipeId's info
         fetch('http://blue.cs.sonoma.edu:8142/ingredientsById', {
@@ -69,16 +73,22 @@ export default class RecipeView extends React.Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id: this.state.id
+                id: this.id
             }),
         })
             .then((response) => response.json())
             .then((response) => {
-                this.setState({
-                    ingredients: [...response]
-                });
+                // If the ingredients table has an entry for this recipe, use it's additional ingredients info instead
+                if(response.length > 0) {
+                    this.setState({
+                        ingredients: [...response],
+                        extra: true
+                    });
+                }
             })
             .catch((error) => {
+                console.log('error in second');
+                console.log(error);
                 Alert.alert(
                     'Database Connection Error',
                     'fetch request failed',
@@ -90,20 +100,19 @@ export default class RecipeView extends React.Component {
     }
 
 
-    renderRow(item, sectionId, rowId, highlightRow) {
+    renderData(data, idx) {
 
-        const { id, Rname, category, total_ingredients, difficulty, tools, info, Rtime} = item;
-
+        const { id, Rname, category, total_ingredients, difficulty, tools, info, Rtime} = data;
 
         return (
-            <View style={styles.container}>
+            <View key={idx} style={styles.container}>
                 <Text style={styles.title}> {Rname}</Text>
                 <Text style={styles.desctext}>{info}</Text>
                 <Text style={styles.space}> </Text>
                 <Text style={styles.titletext}>Total Ingredients: </Text>
                 {
                     this.state.ingredients.map( (item, idx) => {
-                        return (<Text key={idx} style={styles.text}>{item}</Text>);
+                        return (<Text key={idx} style={styles.text}>{ this.state.extra ? item.food + ': ' + item.size + ' ' + item.unit : item}</Text>);
                     })
                 }
                 <Text style={styles.space}> </Text>
@@ -125,46 +134,27 @@ export default class RecipeView extends React.Component {
 
     render() {
 
-        if(0) {
-            return (
-                <View style={styles.container}>
-                    <ListView
-                        dataSource={this.state.data}
-                        renderRow={this.renderRow.bind(this)}
+        return (
+            <View style={styles.container}>
 
-                    />
+                <ScrollView>
+                    {
+                        this.state.data.map( (item, idx) => {
+                            return this.renderData(item, idx);
+                        })
+                    }
+                </ScrollView>
 
-                    <Button
-                        title="Show Steps"
-                        color='darksalmon'
-                        onPress={() => this.props.navigation.push('Steps', {
-                            recipeId: this.state.id
-                        })}
+                <Button
+                    title="Show Steps"
+                    color='darksalmon'
+                    onPress={() => this.props.navigation.push('Steps', {
+                        recipeId: this.id
+                    })}
 
-                    />
-                </View>
-            );
-        }
-        else {
-            return (
-                <View style={styles.container}>
-                    <ListView
-                        dataSource={this.state.data}
-                        renderRow={this.renderRow.bind(this)}
-
-                    />
-
-                    <Button
-                        title="Show Steps"
-                        color='darksalmon'
-                        onPress={() => this.props.navigation.push('Steps', {
-                            recipeId: this.state.id
-                        })}
-
-                    />
-                </View>
-            );
-        }
+                />
+            </View>
+        );
     }
 }
 

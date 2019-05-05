@@ -47,7 +47,7 @@ app.post('/recipeById', function(req, res){
 });
 
 
-app.get('/ingredientsById', function(req, res){
+app.post('/ingredientsById', function(req, res){
     var id = req.body.id;
     var query = 'select * from ingredients where Recipe_ID = ?';
     console.log(query);

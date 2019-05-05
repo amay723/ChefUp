@@ -1,7 +1,7 @@
 import React from 'react';
 import {AppRegistry, StyleSheet, Text, View, ScrollView, Alert, Button, Dimensions, Image} from 'react-native';
 
-const reader = new FileReader();
+//const reader = new FileReader();
 
 export default class StepsView extends React.Component {
 
@@ -11,11 +11,14 @@ export default class StepsView extends React.Component {
         // Get ID passed from RecipeView. If not found use default value "NO-ID"
         this.id = this.props.navigation.getParam('recipeId', 'NO-ID');
 
+        // Current scroll position on the page
+        this.xPos = 0;
 
         this.state = {
             data: [],
             id: this.id
-        }
+        };
+
     }
 
     componentDidMount() {
@@ -55,6 +58,11 @@ export default class StepsView extends React.Component {
 
     }
 
+    // Keep track of current position while scrolling
+    handleScroll(event) {
+        this.xPos = event.nativeEvent.contentOffset.x;
+    }
+
     render() {
 
         let screenWidth = Dimensions.get('window').width;
@@ -64,9 +72,12 @@ export default class StepsView extends React.Component {
         return (
             <View style={styles.container}>
                 <ScrollView
+                    ref={(ref) => this.myScroll = ref}  // Allows us to use scrollTo (maybe?)
                     horizontal={true}
                     pagingEnabled={true}
                     showHorizontalScrollIndicator={true}
+                    onScroll={this.handleScroll.bind(this)}
+                    scrollEventThrottle={8} // number between 1-16, how often to recheck position during scroll event
                 >
                 {
                     this.state.data.map( (item, i) => {
@@ -103,8 +114,6 @@ export default class StepsView extends React.Component {
                                     />) : (<View></View>)
 
                                 }
-
-
                             </View>
                         );
 
@@ -112,6 +121,28 @@ export default class StepsView extends React.Component {
                     })
                 }
                 </ScrollView>
+
+                <Button
+                    color = 'darksalmon'
+                    title="Previous"
+                    onPress={() => {
+                        // Don't go before the first step
+                        let newPos = Math.max(this.xPos - 375, 0);
+                        this.xPos = newPos;
+                        this.myScroll.scrollTo({x: newPos, animated: true});
+                    }}
+                />
+
+                <Button
+                    color = 'darksalmon'
+                    title="Next"
+                    onPress={() => {
+                        // Don't go beyond the last step
+                        let newPos = Math.min(this.xPos + 375, 375*(this.state.data.length-1));
+                        this.xPos = newPos;
+                        this.myScroll.scrollTo({x: newPos, animated: true});
+                    }}
+                />
 
             </View>
         );

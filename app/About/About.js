@@ -1,47 +1,24 @@
-import React, {Component} from 'react';
-import {AppRegistry, StyleSheet, Text, View, ListView, Image} from 'react-native';
+import React from 'react';
+import {AppRegistry, StyleSheet, Text, View, Image} from 'react-native';
 
 const creators = ["Adam May", "Caleb Yost", "Gregory Thomas", "Matthew Mulkeen"];
 
-type Props = {};
-export default class About extends Component<Props> {
-
-    constructor() {
-        super();
-
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.state = {
-            dataSource: ds.cloneWithRows(['row 1', 'row 2']),
-        };
-
-        this.state = {
-            names: ds.cloneWithRows(creators)
-        };
-    }
-
-    renderRow(name, sectionId, rowId, hilightRow) {
-
-        return (
-            <View>
-                <Text style={styles.welcome}>{name}</Text>
-            </View>
-        );
-
-    }
-
+export default class About extends React.Component {
 
     render() {
         return (
-            <View>
+            <View style={styles.welcome}>
                 <Text style={styles.welcome}>ChefUp 2019 &reg;</Text>
                 <Image
                     style={{width: 200, height: 200, alignItems: 'center'}}
                     source={require('../images/CookingBigYoshi.png')}
                 />
-                <ListView
-                    dataSource={this.state.names}
-                    renderRow={this.renderRow.bind(this)}
-                />
+
+                { // forEach doesn't work with this for some reason
+                    creators.map( (name, idx) => {
+                        return (<Text key={idx}>{name}</Text>);
+                    })
+                }
             </View>
         );
     }

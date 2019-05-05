@@ -21,15 +21,13 @@ export default class RecipeMain extends React.Component {
 
         this.state = {
             recipes: [],
-            search: '',
             dietary: [],
-            isVegan: false,
-            isGlutenFree: false,
-            isLactoOvoVegetarian: false,
-            isLactoVegetarian: false,
-            isOvoVegetarian: false,
-            loading: false // depending on recipe load times set to true to use loading screen
+            search: '',
+            loading: true // depending on recipe load times set to true to use loading screen
         };
+
+        // Could make this based off features returned from AsyncStorage Tokens
+        //this.filters = ['Vegan', 'Gluten-free', 'Lacto-Ovo Vegetarian', 'Lacto Vegetarian', 'Ovo Vegetarian'];
 
         // All deals with checking currently set dietary filters
         this.getToken = getToken.bind(this);
@@ -45,6 +43,11 @@ export default class RecipeMain extends React.Component {
         this.getToken('isLactoOvoVegetarian');
         this.getToken('isLactoVegetarian');
         this.getToken('isOvoVegetarian');
+        /* doesn't work async atm
+        this.filters.map( filter => {
+            this.getToken(filter);
+        });
+        */
 
         // Fetch recipe data
         this.fetchRecipes();
@@ -85,13 +88,7 @@ export default class RecipeMain extends React.Component {
 
                     })
                     .catch((error) => {
-                        Alert.alert(
-                            'Database Connection Error',
-                            'fetch request failed',
-                            [
-                                {text: 'OK', onPress: () => this.props.navigation.pop() }
-                            ]
-                        )
+                        //console.log(error); error will be caught in below catch statement
                     })
             )
             .catch((error) => {
@@ -176,6 +173,7 @@ export default class RecipeMain extends React.Component {
 
 
                        ////////// Check all set filters to see if we should display the item //////////
+                       //TODO Make this an iterable thing through this.filters
                        let showFromFilter = true;
 
                        if( this.state.isVegan ) {

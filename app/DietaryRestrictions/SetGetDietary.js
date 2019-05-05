@@ -3,12 +3,14 @@ import { AsyncStorage } from 'react-native';
 // NOTE, functions cannot use arrow function notation because binding from external classes
 // (like in DietaryRestrictions and RecipeMain) is not allowed for arrow functions
 
-export let saveToken = function(token) {
+//TODO impliment getAll tokens
+
+export let saveToken = async function(token) {
 
     let items = {};
     items[token] = !this.state[token];
 
-    AsyncStorage.setItem(token, JSON.stringify(items));
+    await AsyncStorage.setItem(token, JSON.stringify(items));
 
     this.setState({
         [token]: !this.state[token]
