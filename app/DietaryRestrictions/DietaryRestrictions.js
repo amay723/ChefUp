@@ -3,25 +3,9 @@ import { AppRegistry, StyleSheet, Text, View } from 'react-native';
 import { CheckBox } from 'react-native-elements'
 
 import {
-    saveVegan,
-    getVegan,
-    createVegan,
-
-    saveGlutenFree,
-    getGlutenFree,
-    createGlutenFree,
-
-    saveLactoOvoVegetarian,
-    getLactoOvoVegetarian,
-    createLactoOvoVegetarian,
-
-    saveLactoVegetarian,
-    getLactoVegetarian,
-    createLactoVegetarian,
-
-    saveOvoVegetarian,
-    getOvoVegetarian,
-    createOvoVegetarian
+    saveToken,
+    getToken,
+    createToken
 } from  './SetGetDietary.js'
 
 export default class DietaryRestrictions extends React.Component {
@@ -38,34 +22,19 @@ export default class DietaryRestrictions extends React.Component {
         };
 
         // All deals with checking currently set dietary filters
-        this.saveVegan = saveVegan.bind(this);
-        this.getVegan = getVegan.bind(this);
-        this.createVegan = createVegan.bind(this);
+        this.saveToken = saveToken.bind(this);
+        this.getToken = getToken.bind(this);
+        this.createToken = createToken.bind(this);
 
-        this.saveGlutenFree = saveGlutenFree.bind(this);
-        this.getGlutenFree = getGlutenFree.bind(this);
-        this.createGlutenFree = createGlutenFree.bind(this);
-
-        this.saveLactoOvoVegetarian = saveLactoOvoVegetarian.bind(this);
-        this.getLactoOvoVegetarian = getLactoOvoVegetarian.bind(this);
-        this.createLactoOvoVegetarian = createLactoOvoVegetarian.bind(this);
-
-        this.saveLactoVegetarian = saveLactoVegetarian.bind(this);
-        this.getLactoVegetarian = getLactoVegetarian.bind(this);
-        this.createLactoVegetarian = createLactoVegetarian.bind(this);
-
-        this.saveOvoVegetarian = saveOvoVegetarian.bind(this);
-        this.getOvoVegetarian = getOvoVegetarian.bind(this);
-        this.createOvoVegetarian = createOvoVegetarian.bind(this);
     }
 
     componentDidMount() {
 
-        this.getVegan();
-        this.getGlutenFree();
-        this.getLactoOvoVegetarian();
-        this.getLactoVegetarian();
-        this.getOvoVegetarian();
+        this.getToken('isVegan');
+        this.getToken('isGlutenFree');
+        this.getToken('isLactoOvoVegetarian');
+        this.getToken('isLactoVegetarian');
+        this.getToken('isOvoVegetarian');
 
     }
 
@@ -76,31 +45,31 @@ export default class DietaryRestrictions extends React.Component {
                 <CheckBox
                     title='Vegan'
                     center
-                    onPress={() => this.saveVegan()}
+                    onPress={() => this.saveToken('isVegan')}
                     checked={this.state.isVegan}
                 />
                 <CheckBox
                     title='Gluten-Free'
                     center
-                    onPress={() => this.saveGlutenFree()}
+                    onPress={() => this.saveToken('isGlutenFree')}
                     checked={this.state.isGlutenFree}
                 />
                 <CheckBox
                     title='Lacto-Ovo Vegetarian'
                     center
-                    onPress={() => this.saveLactoOvoVegetarian()}
+                    onPress={() => this.saveToken('isLactoOvoVegetarian')}
                     checked={this.state.isLactoOvoVegetarian}
                 />
                 <CheckBox
                     title='Lacto Vegetarian'
                     center
-                    onPress={() => this.saveLactoVegetarian()}
+                    onPress={() => this.saveToken('isLactoVegetarian')}
                     checked={this.state.isLactoVegetarian}
                 />
                 <CheckBox
                     title='Ovo Vegetarian'
                     center
-                    onPress={() => this.saveOvoVegetarian()}
+                    onPress={() => this.saveToken('isOvoVegetarian')}
                     checked={this.state.isOvoVegetarian}
                 />
             </View>

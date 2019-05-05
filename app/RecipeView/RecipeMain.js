@@ -3,21 +3,8 @@ import { AppRegistry, StyleSheet, Text, View, ScrollView, Alert, Image } from 'r
 import { SearchBar, ListItem } from 'react-native-elements';
 
 import {
-    saveVegan,
-    getVegan,
-    createVegan,
-    saveGlutenFree,
-    getGlutenFree,
-    createGlutenFree,
-    saveLactoOvoVegetarian,
-    getLactoOvoVegetarian,
-    createLactoOvoVegetarian,
-    saveLactoVegetarian,
-    getLactoVegetarian,
-    createLactoVegetarian,
-    saveOvoVegetarian,
-    getOvoVegetarian,
-    createOvoVegetarian
+    getToken,
+    createToken
 } from  '../DietaryRestrictions/SetGetDietary.js'
 
 // React likes each rendered item to have a unique key
@@ -28,9 +15,9 @@ function nextUniqueKey() {
 
 export default class RecipeMain extends React.Component {
 
-    constructor(props) {
+    constructor() {
 
-        super(props);
+        super();
 
         this.state = {
             recipes: [],
@@ -45,35 +32,19 @@ export default class RecipeMain extends React.Component {
         };
 
         // All deals with checking currently set dietary filters
-        this.saveVegan = saveVegan.bind(this);
-        this.getVegan = getVegan.bind(this);
-        this.createVegan = createVegan.bind(this);
+        this.getToken = getToken.bind(this);
+        this.createToken = createToken.bind(this);
 
-        this.saveGlutenFree = saveGlutenFree.bind(this);
-        this.getGlutenFree = getGlutenFree.bind(this);
-        this.createGlutenFree = createGlutenFree.bind(this);
-
-        this.saveLactoOvoVegetarian = saveLactoOvoVegetarian.bind(this);
-        this.getLactoOvoVegetarian = getLactoOvoVegetarian.bind(this);
-        this.createLactoOvoVegetarian = createLactoOvoVegetarian.bind(this);
-
-        this.saveLactoVegetarian = saveLactoVegetarian.bind(this);
-        this.getLactoVegetarian = getLactoVegetarian.bind(this);
-        this.createLactoVegetarian = createLactoVegetarian.bind(this);
-
-        this.saveOvoVegetarian = saveOvoVegetarian.bind(this);
-        this.getOvoVegetarian = getOvoVegetarian.bind(this);
-        this.createOvoVegetarian = createOvoVegetarian.bind(this);
     }
 
     componentDidMount() {
 
-        // Get device's current filters
-        this.getVegan();
-        this.getGlutenFree();
-        this.getLactoOvoVegetarian();
-        this.getLactoVegetarian();
-        this.getOvoVegetarian();
+        // Get dietary restrictions
+        this.getToken('isVegan');
+        this.getToken('isGlutenFree');
+        this.getToken('isLactoOvoVegetarian');
+        this.getToken('isLactoVegetarian');
+        this.getToken('isOvoVegetarian');
 
         // Fetch recipe data
         this.fetchRecipes();
@@ -124,6 +95,7 @@ export default class RecipeMain extends React.Component {
                     })
             )
             .catch((error) => {
+                console.log(error);
                 Alert.alert(
                     'Database Connection Error',
                     'fetch request failed',

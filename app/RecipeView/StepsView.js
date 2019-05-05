@@ -94,11 +94,6 @@ export default class StepsView extends React.Component {
                                     }}
                                     source={{uri: item.gif_URL}}
                                 />
-                                <Button
-                                    color='darksalmon'
-                                    title="Next"
-                                    onPress={() => scrollTo({x: x+50, y: y+50, animated: true})}
-                                />
 
                                 { // If last page we want to render done button
                                     (i === this.state.data.length - 1) ? (<Button
