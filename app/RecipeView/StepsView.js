@@ -1,8 +1,6 @@
 import React from 'react';
 import {AppRegistry, StyleSheet, Text, View, ScrollView, Alert, Button, Dimensions, Image} from 'react-native';
 
-//const reader = new FileReader();
-
 export default class StepsView extends React.Component {
 
     constructor(props) {
@@ -15,8 +13,7 @@ export default class StepsView extends React.Component {
         this.xPos = 0;
 
         this.state = {
-            data: [],
-            id: this.id
+            data: []
         };
 
     }
@@ -37,7 +34,7 @@ export default class StepsView extends React.Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id: this.state.id
+                id: this.id
             }),
         })
             .then((response) => response.json())
@@ -128,6 +125,8 @@ export default class StepsView extends React.Component {
                     onPress={() => {
                         // Don't go before the first step
                         let newPos = Math.max(this.xPos - 375, 0);
+                        // Make sure that new position is at center of new step (prevents button spamming from making screen offset)
+                        newPos -= newPos % 375;
                         this.xPos = newPos;
                         this.myScroll.scrollTo({x: newPos, animated: true});
                     }}
@@ -139,6 +138,8 @@ export default class StepsView extends React.Component {
                     onPress={() => {
                         // Don't go beyond the last step
                         let newPos = Math.min(this.xPos + 375, 375*(this.state.data.length-1));
+                        // Make sure that new position is at center of new step
+                        newPos -= newPos % 375;
                         this.xPos = newPos;
                         this.myScroll.scrollTo({x: newPos, animated: true});
                     }}
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'tomato',
+        backgroundColor: 'tomato'
     },
     welcome: {
         fontSize: 20,

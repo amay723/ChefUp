@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppRegistry, StyleSheet, Text, View, ScrollView, Alert, Button } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, ScrollView, Alert, Button, Image, Picker, Dimensions } from 'react-native';
 
 
 export default class RecipeView extends React.Component {
@@ -10,11 +10,16 @@ export default class RecipeView extends React.Component {
         // Get ID passed from RecipeMain. If not found use default value "NO-ID"
         this.id = this.props.navigation.getParam('recipeId', 'NO-ID');
 
+        this.servingN = [1, 2, 3, 4, 5];
+
         this.state = {
             data: [],
             ingredients: [],
             tools: [],
-            extra: false
+            extra: false,
+            stepTime: 10,
+            timerDisabled: false,
+            servingSize: 1
         };
 
         this.renderData = this.renderData.bind(this);
@@ -107,12 +112,23 @@ export default class RecipeView extends React.Component {
         return (
             <View key={idx} style={styles.container}>
                 <Text style={styles.title}> {Rname}</Text>
+
+                <Image
+                    style={{
+                        resizeMode: 'contain',
+                        width: 300,
+                        height: 300
+                    }}
+                    source={{uri: 'https://media.asicdn.com/images/jpgo/25390000/25391162.jpg'}}
+                />
+
                 <Text style={styles.desctext}>{info}</Text>
                 <Text style={styles.space}> </Text>
                 <Text style={styles.titletext}>Total Ingredients: </Text>
                 {
+                    // should probably use item.food !== undefined instead of this.state.extra. This causes weird results sometimes
                     this.state.ingredients.map( (item, idx) => {
-                        return (<Text key={idx} style={styles.text}>{ this.state.extra ? item.food + ': ' + item.size + ' ' + item.unit : item}</Text>);
+                        return (<Text key={idx} style={styles.text}>{ item.food !== undefined ? item.food + ': ' + parseFloat(item.size)*this.state.servingSize + ' ' + item.unit : item}</Text>);
                     })
                 }
                 <Text style={styles.space}> </Text>
@@ -130,29 +146,83 @@ export default class RecipeView extends React.Component {
         )
     }
 
+    timerCountdown() {
+        let newTime = this.state.stepTime -1;
+
+        if( newTime === 0) {
+            clearInterval(this.state.timerId);
+            Alert.alert(
+                'Timer Done',
+                '',
+                [
+                    {text: 'OK'}
+                ]
+            )
+        }
+        this.setState({ stepTime: newTime });
+    }
+
 
 
     render() {
 
+        let screenWidth = Dimensions.get('window').width;
+        let screenHeight = Dimensions.get('window').height;
+
         return (
             <View style={styles.container}>
 
-                <ScrollView>
+                <ScrollView
+                    style={{position: 'absolute', top: 0, bottom: 100}}
+                >
+
                     {
                         this.state.data.map( (item, idx) => {
                             return this.renderData(item, idx);
                         })
                     }
+
+                    <Text>Time Left: {this.state.stepTime}</Text>
+                    <Button
+                        title="Start Timer"
+                        color='darksalmon'
+                        disabled={this.state.timerDisabled}
+                        onPress={() => {
+                            if( this.state.stepTime > 0 ) {
+                                let timerId = setInterval(this.timerCountdown.bind(this), 1000);
+                                this.setState({timerId: timerId, timerDisabled: true});
+                            }
+                        }}
+
+                    />
+
+
+                    <Button
+                        title="Show Steps"
+                        color='darksalmon'
+                        onPress={() => this.props.navigation.push('Steps', {
+                            recipeId: this.id
+                        })}
+
+                    />
                 </ScrollView>
 
-                <Button
-                    title="Show Steps"
-                    color='darksalmon'
-                    onPress={() => this.props.navigation.push('Steps', {
-                        recipeId: this.id
-                    })}
 
-                />
+                <Picker
+                    selectedValue={this.state.servingSize}
+                    style={{position: 'absolute', bottom: 0, left: 0, right: 0, height: 100, backgroundColor: '#fff'}}
+                    onValueChange={(itemValue, itemIndex) =>
+                        this.setState({servingSize: itemValue})
+                    }>
+                    {
+                        this.servingN.map( (item, idx) => (<Picker.Item key={idx} label={item.toString()} value={item} />))
+
+                    }
+                </Picker>
+
+                {/* Declated after Picker because we want to render this last (and on top of) the picker background */}
+                <Text style={{position: 'relative', top: screenHeight/2 - 125, left: 0, right: 0, alignItems: 'baseline'}}>Serving Size:</Text>
+
             </View>
         );
     }

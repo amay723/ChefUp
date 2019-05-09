@@ -14,7 +14,7 @@ export default class About extends React.Component {
                     source={require('../images/CookingBigYoshi.png')}
                 />
 
-                { // forEach doesn't work with this for some reason
+                {
                     creators.map( (name, idx) => {
                         return (<Text key={idx}>{name}</Text>);
                     })
