@@ -154,7 +154,7 @@ export default class RecipeView extends React.Component {
             <View style={styles.container}>
 
                 <ScrollView
-                    style={{position: 'absolute', top: 0, bottom: 100}}
+                    style={{position: 'absolute', top: 0, bottom: 50, width: screenWidth}}
                 >
 
                     {
@@ -166,7 +166,7 @@ export default class RecipeView extends React.Component {
 
                     <Button
                         title="Show Steps"
-                        color='darksalmon'
+                        color='darkseagreen'
                         onPress={() => this.props.navigation.push('Steps', {
                             recipeId: this.id
                         })}
@@ -177,7 +177,7 @@ export default class RecipeView extends React.Component {
 
                 <Picker
                     selectedValue={this.state.servingSize}
-                    style={{position: 'absolute', bottom: 0, left: 0, right: 0, height: 100, backgroundColor: '#fff'}}
+                    style={{position: 'absolute', bottom: 0, left: 0, right: 0, height: 50, backgroundColor: 'palegoldenrod'}}
                     onValueChange={(itemValue, itemIndex) =>
                         this.setState({servingSize: itemValue})
                     }>
@@ -189,7 +189,7 @@ export default class RecipeView extends React.Component {
                 </Picker>
 
                 {/* Declated after Picker because we want to render this last (and on top of) the picker background */}
-                <Text style={{position: 'relative', top: screenHeight/2 - 125, left: 0, right: 0, alignItems: 'baseline'}}>Serving Size:</Text>
+                <Text style={{position: 'relative', top: screenHeight/2 - 75, left: 0, right: 0, alignItems: 'baseline'}}>Serving Size</Text>
 
             </View>
         );
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'tomato',
+        backgroundColor: 'honeydew',
     },
     welcome: {
         fontSize: 20,
@@ -213,22 +213,22 @@ const styles = StyleSheet.create({
         fontSize: 25,
         alignItems: 'center',
         fontWeight: 'bold',
-        color: 'firebrick',
+        color: 'darkgreen',
     },
     titletext: {
         fontSize: 22,
         margin: 2,
-        color: 'papayawhip',
+        color: 'crimson',
     },
     text: {
         fontSize: 20,
         margin: 2,
-        color: 'moccasin',
+        color: 'deeppink',
     },
     desctext: {
         fontSize: 15,
         margin: 2,
-        color: 'moccasin',
+        color: 'mediumseagreen',
     },
     space: {
         textAlign:'center',

@@ -14,24 +14,25 @@ class HomeScreen extends React.Component {
             <View style={styles.container}>
               <Image
                   style={{resizeMode: 'contain'}}
-                  source={require('./app/images/chefuplogov2.png')}
+                  style={{width: 300, height: 300, alignItems: 'center'}}
+                  source={require('./app/images/ChefUpLogo.png')}
               />
-              <Text style={styles.welcome}>Welcome to Chef Up!</Text>
+              <Text style={styles.welcome}>Welcome!</Text>
               <Button
                   title = "Show Recipes"
-                  color = 'darksalmon'
+                  color = 'darkseagreen'
                   onPress={() => this.props.navigation.push('Details')}
               />
                 <Text style={styles.space}> </Text>
                 <Button
                     title = "Edit Dietary Preferences"
-                    color = 'darksalmon'
+                    color = 'darkseagreen'
                     onPress={() => this.props.navigation.push('Dietary')}
                 />
                 <Text style={styles.space}> </Text>
               <Button
                   title = "About Us"
-                  color = 'darksalmon'
+                  color = 'darkseagreen'
                   onPress={() => this.props.navigation.push('About')}
               />
             </View>
@@ -44,10 +45,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'tomato',
+        backgroundColor: 'honeydew',
     },
     welcome: {
-        color: 'firebrick',
+        color: 'darkgreen',
         fontSize: 25,
         textAlign: 'center',
         fontWeight: 'bold',

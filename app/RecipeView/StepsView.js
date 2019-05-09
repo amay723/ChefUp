@@ -13,7 +13,9 @@ export default class StepsView extends React.Component {
         this.xPos = 0;
 
         this.state = {
-            data: []
+            data: [],
+            noData: false,
+            loading: true
         };
 
         this.timerCountdown = this.timerCountdown.bind(this);
@@ -42,7 +44,9 @@ export default class StepsView extends React.Component {
             .then((response) => response.json())
             .then((response) => {
                 this.setState({
-                    data: [...response]
+                    data: [...response],
+                    noData: response.length === 0,
+                    loading: false
                 });
             })
             .catch((error) => {
@@ -86,6 +90,23 @@ export default class StepsView extends React.Component {
         let screenWidth = Dimensions.get('window').width;
         let screenHeight = Dimensions.get('window').height;
 
+        if( this.state.loading ) {
+            return (
+                <View style={styles.loading}>
+                    <Text>Please wait while your results load</Text>
+                    <Image
+                        style={{
+                            resizeMode: 'contain',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: 50,
+                            height: 50
+                        }}
+                        source={require('../images/loading.gif')}
+                    />
+                </View>
+            );
+        }
 
         return (
             <View style={styles.container}>
@@ -99,7 +120,7 @@ export default class StepsView extends React.Component {
                 >
 
                 {
-                    this.state.data.length === 0 ? (<Image
+                    this.state.noData ? (<Image
                         style={{resizeMode: 'contain'}}
                         source={require('../images/ConstructionBigYoshi.png')}
                     />) : (<View></View>)
@@ -150,7 +171,7 @@ export default class StepsView extends React.Component {
                                         <Text>Time Left: {this.state[iSeconds]}</Text>
                                         <Button
                                             title="Start Timer"
-                                            color='darksalmon'
+                                            color='darkseagreen'
                                             disabled={this.state[i]}
                                             onPress={() => {
                                                 let timerId = setInterval(() => this.timerCountdown(i), 1000);
@@ -171,7 +192,7 @@ export default class StepsView extends React.Component {
 
                                 { // If last page we want to render done button
                                     (i === this.state.data.length - 1) ? (<Button
-                                        color = 'darksalmon'
+                                        color = 'darkseagreen'
                                         title="Done"
                                         onPress={() => this.props.navigation.pop(2)}
                                     />) : (<View></View>)
@@ -186,7 +207,7 @@ export default class StepsView extends React.Component {
                 </ScrollView>
 
                 <Button
-                    color = 'darksalmon'
+                    color = 'darkseagreen'
                     title="Previous"
                     onPress={() => {
                         // Don't go before the first step
@@ -199,11 +220,11 @@ export default class StepsView extends React.Component {
                 />
 
                 <Button
-                    color = 'darksalmon'
+                    color = 'darkseagreen'
                     title="Next"
                     onPress={() => {
                         // Don't go beyond the last step
-                        let newPos = Math.min(this.xPos + screenWidth, screenWidth*(this.state.data.length-1));
+                        let newPos = Math.min(this.xPos + screenWidth, screenWidth*(this.state.data.length-1) );
                         // Make sure that new position is at center of new step
                         newPos -= newPos % screenWidth;
                         this.xPos = newPos;
@@ -221,7 +242,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'tomato'
+        backgroundColor: 'honeydew'
     },
     welcome: {
         fontSize: 20,
@@ -231,17 +252,23 @@ const styles = StyleSheet.create({
     titletext: {
         fontSize: 22,
         margin: 2,
-        color: 'papayawhip',
+        color: 'crimson',
     },
     text: {
         fontSize: 20,
         margin: 2,
-        color: 'moccasin',
+        color: 'deeppink',
         },
     header: {
         textAlign: 'center',
         fontSize: 25,
-        color: 'firebrick',
+        color: 'darkgreen',
+    },
+    loading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'honeydew',
     }
 });
 

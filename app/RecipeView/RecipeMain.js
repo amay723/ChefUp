@@ -125,7 +125,7 @@ export default class RecipeMain extends React.Component {
 
         if( this.state.loading ) {
             return (
-                <View style={styles.container}>
+                <View style={styles.loading}>
                     <Text>Please wait while your results load</Text>
                     <Image
                         style={{
@@ -221,16 +221,22 @@ export default class RecipeMain extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'tomato'
+        backgroundColor: 'honeydew',
     },
     welcome: {
         fontSize: 25,
-        backgroundColor: 'tomato'
+        backgroundColor: 'honeydew',
     },
     list: {
         flex: 2,
         margin: 1,
-        backgroundColor: 'ivory'
+        backgroundColor: 'lavenderblush',
+    },
+    loading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'honeydew',
     }
 });
 

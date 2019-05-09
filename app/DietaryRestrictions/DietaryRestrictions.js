@@ -40,35 +40,40 @@ export default class DietaryRestrictions extends React.Component {
 
     render() {
         return (
-            <View>
-                <Text>Edit Dietary Restrictions</Text>
+            <View style={styles.container}>
+                <Text style={styles.welcome}>Edit Dietary Restrictions</Text>
                 <CheckBox
                     title='Vegan'
                     center
+                    checkedColor = 'red'
                     onPress={() => this.saveToken('isVegan')}
                     checked={this.state.isVegan}
                 />
                 <CheckBox
                     title='Gluten-Free'
                     center
+                    checkedColor = 'red'
                     onPress={() => this.saveToken('isGlutenFree')}
                     checked={this.state.isGlutenFree}
                 />
                 <CheckBox
                     title='Lacto-Ovo Vegetarian'
                     center
+                    checkedColor = 'red'
                     onPress={() => this.saveToken('isLactoOvoVegetarian')}
                     checked={this.state.isLactoOvoVegetarian}
                 />
                 <CheckBox
                     title='Lacto Vegetarian'
                     center
+                    checkedColor = 'red'
                     onPress={() => this.saveToken('isLactoVegetarian')}
                     checked={this.state.isLactoVegetarian}
                 />
                 <CheckBox
                     title='Ovo Vegetarian'
                     center
+                    checkedColor = 'red'
                     onPress={() => this.saveToken('isOvoVegetarian')}
                     checked={this.state.isOvoVegetarian}
                 />
@@ -80,14 +85,16 @@ export default class DietaryRestrictions extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        //justifyContent: 'center',
+        //alignItems: 'center',
+        backgroundColor: 'honeydew',
     },
     welcome: {
-        fontSize: 20,
+        fontSize: 25,
         textAlign: 'center',
-        margin: 10,
+        color: 'darkgreen',
+        fontWeight: 'bold',
+        margin: 35,
     }
 });
 
