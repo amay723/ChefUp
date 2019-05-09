@@ -16,6 +16,8 @@ export default class StepsView extends React.Component {
             data: []
         };
 
+        this.timerCountdown = this.timerCountdown.bind(this);
+
     }
 
     componentDidMount() {
@@ -60,6 +62,25 @@ export default class StepsView extends React.Component {
         this.xPos = event.nativeEvent.contentOffset.x;
     }
 
+    timerCountdown(i) {
+
+        let iSeconds = i + "Seconds";
+        let newTime = this.state[iSeconds] -1;
+
+        if( newTime === 0) {
+            let iTimer = i + 'TimerId';
+            clearInterval(this.state[iTimer]);
+            Alert.alert(
+                'Timer Done',
+                'Step ' + i + ' is finished!',
+                [
+                    {text: 'OK'}
+                ]
+            )
+        }
+        this.setState({ [iSeconds]: newTime });
+    }
+
     render() {
 
         let screenWidth = Dimensions.get('window').width;
@@ -76,8 +97,27 @@ export default class StepsView extends React.Component {
                     onScroll={this.handleScroll.bind(this)}
                     scrollEventThrottle={8} // number between 1-16, how often to recheck position during scroll event
                 >
+
+                {
+                    this.state.data.length === 0 ? (<Image
+                        style={{resizeMode: 'contain'}}
+                        source={require('../images/ConstructionBigYoshi.png')}
+                    />) : (<View></View>)
+                }
+
+
                 {
                     this.state.data.map( (item, i) => {
+
+                        // Give each button a unique dynamic key to mark which are enabled/disabled
+                        //this.state[i] = false;
+
+                        let iSeconds = i + "Seconds";
+                        let iStarted = i + "Started";
+                        if( item.seconds > 0 && this.state[iStarted] === undefined) {
+                            this.state[iSeconds] = item.seconds;
+                            this.state[i] = false;
+                        }
 
                         return (
                             <View
@@ -103,6 +143,32 @@ export default class StepsView extends React.Component {
                                     source={{uri: item.gif_URL}}
                                 />
 
+
+
+                                { item.seconds > 0 ? (
+                                    <View>
+                                        <Text>Time Left: {this.state[iSeconds]}</Text>
+                                        <Button
+                                            title="Start Timer"
+                                            color='darksalmon'
+                                            disabled={this.state[i]}
+                                            onPress={() => {
+                                                let timerId = setInterval(() => this.timerCountdown(i), 1000);
+                                                console.log('timer id', timerId, 'started');
+                                                let iTimer = i + 'TimerId';
+                                                let iStarted = i + "Started";
+                                                console.log('i=', i);
+                                                this.setState({[iTimer]: timerId, [i]: true, [iStarted]: true});
+
+                                                // Following is probably unneeded after i fixed stupid mistakes
+                                                this.state[i] = true;
+                                                this.state[iStarted] = true;
+                                            }}
+                                        />
+                                    </View>) : (<Text></Text>)
+                                }
+
+
                                 { // If last page we want to render done button
                                     (i === this.state.data.length - 1) ? (<Button
                                         color = 'darksalmon'
@@ -124,9 +190,9 @@ export default class StepsView extends React.Component {
                     title="Previous"
                     onPress={() => {
                         // Don't go before the first step
-                        let newPos = Math.max(this.xPos - 375, 0);
+                        let newPos = Math.max(this.xPos - screenWidth, 0);
                         // Make sure that new position is at center of new step (prevents button spamming from making screen offset)
-                        newPos -= newPos % 375;
+                        newPos -= newPos % screenWidth; //375;
                         this.xPos = newPos;
                         this.myScroll.scrollTo({x: newPos, animated: true});
                     }}
@@ -137,9 +203,9 @@ export default class StepsView extends React.Component {
                     title="Next"
                     onPress={() => {
                         // Don't go beyond the last step
-                        let newPos = Math.min(this.xPos + 375, 375*(this.state.data.length-1));
+                        let newPos = Math.min(this.xPos + screenWidth, screenWidth*(this.state.data.length-1));
                         // Make sure that new position is at center of new step
-                        newPos -= newPos % 375;
+                        newPos -= newPos % screenWidth;
                         this.xPos = newPos;
                         this.myScroll.scrollTo({x: newPos, animated: true});
                     }}

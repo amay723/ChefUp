@@ -199,7 +199,7 @@ export default class RecipeMain extends React.Component {
                                    style={styles.list}
                                    key={nextUniqueKey()}
                                    topDivider={true}
-                                   leftAvatar={{source: {uri: 'https://media.asicdn.com/images/jpgo/25390000/25391162.jpg'}}}
+                                   leftAvatar={{source: {uri: l.icon}}}
                                    title={l.Rname}
                                    subtitle={l.category}
                                    rightSubtitle={"Difficulty: " + "*".repeat(l.difficulty) + "\nPrice: $$$\nTime: " + l.Rtime + ' m'}

@@ -17,8 +17,6 @@ export default class RecipeView extends React.Component {
             ingredients: [],
             tools: [],
             extra: false,
-            stepTime: 10,
-            timerDisabled: false,
             servingSize: 1
         };
 
@@ -107,7 +105,7 @@ export default class RecipeView extends React.Component {
 
     renderData(data, idx) {
 
-        const { id, Rname, category, total_ingredients, difficulty, tools, info, Rtime} = data;
+        const { id, Rname, category, total_ingredients, difficulty, tools, info, Rtime, icon} = data;
 
         return (
             <View key={idx} style={styles.container}>
@@ -119,7 +117,7 @@ export default class RecipeView extends React.Component {
                         width: 300,
                         height: 300
                     }}
-                    source={{uri: 'https://media.asicdn.com/images/jpgo/25390000/25391162.jpg'}}
+                    source={{uri: icon}}
                 />
 
                 <Text style={styles.desctext}>{info}</Text>
@@ -146,23 +144,6 @@ export default class RecipeView extends React.Component {
         )
     }
 
-    timerCountdown() {
-        let newTime = this.state.stepTime -1;
-
-        if( newTime === 0) {
-            clearInterval(this.state.timerId);
-            Alert.alert(
-                'Timer Done',
-                '',
-                [
-                    {text: 'OK'}
-                ]
-            )
-        }
-        this.setState({ stepTime: newTime });
-    }
-
-
 
     render() {
 
@@ -182,20 +163,6 @@ export default class RecipeView extends React.Component {
                         })
                     }
 
-                    <Text>Time Left: {this.state.stepTime}</Text>
-                    <Button
-                        title="Start Timer"
-                        color='darksalmon'
-                        disabled={this.state.timerDisabled}
-                        onPress={() => {
-                            if( this.state.stepTime > 0 ) {
-                                let timerId = setInterval(this.timerCountdown.bind(this), 1000);
-                                this.setState({timerId: timerId, timerDisabled: true});
-                            }
-                        }}
-
-                    />
-
 
                     <Button
                         title="Show Steps"
@@ -214,6 +181,7 @@ export default class RecipeView extends React.Component {
                     onValueChange={(itemValue, itemIndex) =>
                         this.setState({servingSize: itemValue})
                     }>
+                    <Picker.Item key={this.servingN.length} label=".5" value={.5} />
                     {
                         this.servingN.map( (item, idx) => (<Picker.Item key={idx} label={item.toString()} value={item} />))
 
