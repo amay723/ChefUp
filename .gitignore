@@ -6,7 +6,7 @@ npm-debug.*
 
 ChefUpApp/node_modules/**/*
 ChefUpApp/.expo/*
-**/.idea/*
+*/.idea/*
 
 ChefUpApi/node_modules/**/*
 ChefUpApi/db_connection.js
