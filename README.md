@@ -11,6 +11,14 @@ When you are ready to cook, scroll down and click on the "Show Steps" button.
 Some recipes come with visual graphics detailing how exactly each step needs to be done, taking out all the confusion of the ordinary step process.
 ChefUp also comes in with built in step timers (which can be run concurrently), so you won't have to swap in between ChefUp and your phone's timer app.
 
+## Future Features
+- Adding the ability for users to create and upload their own recipes.
+
+## Known Issues
+- Leaving (unmounting) a page before a timer has finished will cause a warning (only in developer mode). Need to figure out clearing all timers in the componentWillUnmount function in the ViewSteps page.
+- Pages that do have extra ingredient information will sometimes not show the extra info, and need to be re-entered (sometimes several times) to display correctly.
+
+
 ## How to Download & Run
 1. Make sure you have the latest version of node, yarn & expo installed (Mac install commands)
     1. `brew update`
@@ -31,8 +39,8 @@ ChefUp also comes in with built in step timers (which can be run concurrently), 
 6. Start the expo server inside the ChefUpApp folder: `npm start`
 
 ## Screenshots
-![picture alt size](https://i.imgur.com/yQBKUSb.png "Home Screen")<!-- .element height="50%" width="50%" -->
-![picture alt size](https://i.imgur.com/cAnyBIs.png "Dietary Preferences Screen")
-![picture alt size](https://i.imgur.com/hpnF4RH.png "Search Screen")
-![picture alt size](https://i.imgur.com/b11e1jF.png "Recipe Info Screen")
-![picture alt size](https://i.imgur.com/GnL4TOG.png "Recipe Step Screen")
+<img src="https://i.imgur.com/yQBKUSb.png" alt="Home Screen" height="50%" width="50%">
+<img src="https://i.imgur.com/cAnyBIs.png" alt="Dietary Preferences Screen" height="50%" width="50%">
+<img src="https://i.imgur.com/hpnF4RH.png" alt="Search Screen" height="50%" width="50%">
+<img src="https://i.imgur.com/b11e1jF.png" alt="Recipe Info Screen" height="50%" width="50%">
+<img src="https://i.imgur.com/GnL4TOG.png" alt="Recipe Step Screen" height="50%" width="50%">
