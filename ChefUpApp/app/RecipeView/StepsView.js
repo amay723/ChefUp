@@ -108,9 +108,23 @@ export default class StepsView extends React.Component {
             );
         }
 
+        if( this.state.noData ) {
+            return (
+                <View style={styles.container}>
+                    <Text style={styles.header}>Sorry, no data here</Text>
+                    <Image
+                        style={{resizeMode: 'contain'}}
+                        source={require('../images/ConstructionBigYoshi.png')}
+                    />
+                </View>
+
+            );
+        }
+
         return (
             <View style={styles.container}>
                 <ScrollView
+                    style={{position: 'absolute', top: 0, bottom: 50, width: screenWidth}}
                     ref={(ref) => this.myScroll = ref}  // Allows us to use scrollTo (maybe?)
                     horizontal={true}
                     pagingEnabled={true}
@@ -118,14 +132,6 @@ export default class StepsView extends React.Component {
                     onScroll={this.handleScroll.bind(this)}
                     scrollEventThrottle={8} // number between 1-16, how often to recheck position during scroll event
                 >
-
-                {
-                    this.state.noData ? (<Image
-                        style={{resizeMode: 'contain'}}
-                        source={require('../images/ConstructionBigYoshi.png')}
-                    />) : (<View></View>)
-                }
-
 
                 {
                     this.state.data.map( (item, i) => {
@@ -151,7 +157,7 @@ export default class StepsView extends React.Component {
                                     backgroundcolor: 'tomato'
                                 }}
                             >
-                                <Text style={styles.header}>Step Number: {item.Sorder}</Text>
+                                <Text style={styles.header}>Step Number: {item.Sorder}/{this.state.data.length}</Text>
                                 <Text style={styles.titletext}>Step Description: </Text>
                                 <Text style={styles.text}>{item.content}</Text>
 
@@ -163,7 +169,6 @@ export default class StepsView extends React.Component {
                                     }}
                                     source={{uri: item.gif_URL}}
                                 />
-
 
 
                                 { item.seconds > 0 ? (
@@ -180,10 +185,6 @@ export default class StepsView extends React.Component {
                                                 let iStarted = i + "Started";
                                                 console.log('i=', i);
                                                 this.setState({[iTimer]: timerId, [i]: true, [iStarted]: true});
-
-                                                // Following is probably unneeded after i fixed stupid mistakes
-                                                this.state[i] = true;
-                                                this.state[iStarted] = true;
                                             }}
                                         />
                                     </View>) : (<Text></Text>)
@@ -206,31 +207,33 @@ export default class StepsView extends React.Component {
                 }
                 </ScrollView>
 
-                <Button
-                    color = 'darkseagreen'
-                    title="Previous"
-                    onPress={() => {
-                        // Don't go before the first step
-                        let newPos = Math.max(this.xPos - screenWidth, 0);
-                        // Make sure that new position is at center of new step (prevents button spamming from making screen offset)
-                        newPos -= newPos % screenWidth; //375;
-                        this.xPos = newPos;
-                        this.myScroll.scrollTo({x: newPos, animated: true});
-                    }}
-                />
+                <View style={styles.bottomButtons}>
+                    <Button
+                        color = 'darkseagreen'
+                        title="Previous"
+                        onPress={() => {
+                            // Don't go before the first step
+                            let newPos = Math.max(this.xPos - screenWidth, 0);
+                            // Make sure that new position is at center of new step (prevents button spamming from making screen offset)
+                            newPos -= newPos % screenWidth; //375;
+                            this.xPos = newPos;
+                            this.myScroll.scrollTo({x: newPos, animated: true});
+                        }}
+                    />
 
-                <Button
-                    color = 'darkseagreen'
-                    title="Next"
-                    onPress={() => {
-                        // Don't go beyond the last step
-                        let newPos = Math.min(this.xPos + screenWidth, screenWidth*(this.state.data.length-1) );
-                        // Make sure that new position is at center of new step
-                        newPos -= newPos % screenWidth;
-                        this.xPos = newPos;
-                        this.myScroll.scrollTo({x: newPos, animated: true});
-                    }}
-                />
+                    <Button
+                        color = 'darkseagreen'
+                        title="Next"
+                        onPress={() => {
+                            // Don't go beyond the last step
+                            let newPos = Math.min(this.xPos + screenWidth, screenWidth*(this.state.data.length-1) );
+                            // Make sure that new position is at center of new step
+                            newPos -= newPos % screenWidth;
+                            this.xPos = newPos;
+                            this.myScroll.scrollTo({x: newPos, animated: true});
+                        }}
+                    />
+                </View>
 
             </View>
         );
@@ -243,11 +246,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'honeydew'
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
     },
     titletext: {
         fontSize: 22,
@@ -269,6 +267,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'honeydew',
+    },
+    bottomButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 50,
+        backgroundColor: 'palegoldenrod'
     }
 });
 

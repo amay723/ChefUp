@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppRegistry, StyleSheet, Text, View, ScrollView, Alert, Button, Image, Picker, Dimensions } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, ScrollView, Alert, Button, Image, Picker, Dimensions, ActionSheetIOS, Platform } from 'react-native';
 
 
 export default class RecipeView extends React.Component {
@@ -10,7 +10,8 @@ export default class RecipeView extends React.Component {
         // Get ID passed from RecipeMain. If not found use default value "NO-ID"
         this.id = this.props.navigation.getParam('recipeId', 'NO-ID');
 
-        this.servingN = [1, 2, 3, 4, 5];
+        // All serving sizes the user can choose from
+        this.servingN = [0.5, 1, 2, 3, 4, 5];
 
         this.state = {
             data: [],
@@ -107,6 +108,25 @@ export default class RecipeView extends React.Component {
 
         const { id, Rname, category, total_ingredients, difficulty, tools, info, Rtime, icon} = data;
 
+        // IOS Picker does not work well in this design, so use platform specific serving size picker
+        const ServingSizeSelector = Platform.select({
+            ios: () => (<Button
+                title={"Current Serving Size: " + this.state.servingSize}
+                color='darkseagreen'
+                onPress={ this.changeServings.bind(this) }
+            />),
+            android: () => (<Picker
+                selectedValue={this.state.servingSize}
+                onValueChange={(itemValue, itemIndex) =>
+                    this.setState({servingSize: itemValue})
+                }>
+                {
+                    this.servingN.map( (item, idx) => (<Picker.Item key={idx} label={item.toString()} value={item} />))
+
+                }
+            </Picker>)
+        });
+
         return (
             <View key={idx} style={styles.container}>
                 <Text style={styles.title}> {Rname}</Text>
@@ -129,6 +149,13 @@ export default class RecipeView extends React.Component {
                         return (<Text key={idx} style={styles.text}>{ item.food !== undefined ? item.food + ': ' + parseFloat(item.size)*this.state.servingSize + ' ' + item.unit : item}</Text>);
                     })
                 }
+
+                { // Check to see if we have extra ingredient data in order to show serving changes
+                    this.state.ingredients.length !== 0 && this.state.ingredients[0].food !== undefined ?
+                        (<ServingSizeSelector/>) :
+                        (<View></View>)
+                }
+
                 <Text style={styles.space}> </Text>
                 <Text style={styles.titletext}>Tools: </Text>
                 {
@@ -144,52 +171,50 @@ export default class RecipeView extends React.Component {
         )
     }
 
+    changeServings() {
+
+        ActionSheetIOS.showActionSheetWithOptions(
+            {
+                options: [...this.servingN.map(String), 'Cancel'],
+                cancelButtonIndex: this.servingN.length
+            },
+            (buttonIndex) => {
+                // stuff for each button
+                if( buttonIndex !== this.servingN.length ){
+                    this.setState({servingSize: this.servingN[buttonIndex]})
+                }
+            }
+        );
+
+    }
+
 
     render() {
 
         let screenWidth = Dimensions.get('window').width;
-        let screenHeight = Dimensions.get('window').height;
+        // let screenHeight = Dimensions.get('window').height;
 
         return (
             <View style={styles.container}>
 
-                <ScrollView
-                    style={{position: 'absolute', top: 0, bottom: 50, width: screenWidth}}
-                >
-
+                <ScrollView style={{position: 'absolute', top: 0, bottom: 50, width: screenWidth}}>
                     {
                         this.state.data.map( (item, idx) => {
                             return this.renderData(item, idx);
                         })
                     }
+                </ScrollView>
 
 
+                <View style={{position: 'absolute', bottom: 0, left: 0, right: 0, height: 50, backgroundColor: 'palegoldenrod'}}>
                     <Button
                         title="Show Steps"
                         color='darkseagreen'
                         onPress={() => this.props.navigation.push('Steps', {
                             recipeId: this.id
                         })}
-
                     />
-                </ScrollView>
-
-
-                <Picker
-                    selectedValue={this.state.servingSize}
-                    style={{position: 'absolute', bottom: 0, left: 0, right: 0, height: 50, backgroundColor: 'palegoldenrod'}}
-                    onValueChange={(itemValue, itemIndex) =>
-                        this.setState({servingSize: itemValue})
-                    }>
-                    <Picker.Item key={this.servingN.length} label=".5" value={.5} />
-                    {
-                        this.servingN.map( (item, idx) => (<Picker.Item key={idx} label={item.toString()} value={item} />))
-
-                    }
-                </Picker>
-
-                {/* Declated after Picker because we want to render this last (and on top of) the picker background */}
-                <Text style={{position: 'relative', top: screenHeight/2 - 75, left: 0, right: 0, alignItems: 'baseline'}}>Serving Size</Text>
+                </View>
 
             </View>
         );
