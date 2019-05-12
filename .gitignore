@@ -4,9 +4,11 @@ npm-debug.*
 *.key
 *.mobileprovision
 
+.idea/*
+
 ChefUpApp/node_modules/**/*
 ChefUpApp/.expo/*
-**/.idea/*
+ChefUpApp/.idea/*
 
 ChefUpApi/node_modules/**/*
 ChefUpApi/db_connection.js
