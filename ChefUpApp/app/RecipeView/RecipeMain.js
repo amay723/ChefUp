@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppRegistry, StyleSheet, Text, View, ScrollView, Alert, Image } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, ScrollView, Alert, Image, Button } from 'react-native';
 import { SearchBar, ListItem } from 'react-native-elements';
 
 import {
@@ -15,9 +15,22 @@ function nextUniqueKey() {
 
 export default class RecipeMain extends React.Component {
 
-    constructor() {
+    // Puts an Add Recipe button on top right of navigation bar & optional navigation screen title
+    static navigationOptions = ({ navigation }) => {
+        return {
+            // title: 'Details',
+            headerRight: (
+                <Button
+                    title="Add Recipe"
+                    onPress={() => navigation.push('CameraMain')}
+                />
+            ),
+        };
+    };
 
-        super();
+    constructor(props) {
+
+        super(props);
 
         this.state = {
             recipes: [],

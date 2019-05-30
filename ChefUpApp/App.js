@@ -8,6 +8,10 @@ import StepScreen from './app/RecipeView/StepsView'
 import AboutScreen from './app/About/About'
 import DietaryScreen from './app/DietaryRestrictions/DietaryRestrictions'
 
+import CameraTest from './app/CameraTest/CameraTest'
+import CameraRecordTest from './app/CameraTest/CameraRecordTest'
+import CameraMain from './app/CameraTest/CameraMain'
+
 class HomeScreen extends React.Component {
     render() {
         return (
@@ -65,7 +69,7 @@ const styles = StyleSheet.create({
     }
 });
 
-// Put all Navigatable screens into the navigator
+// Put all Navigation screens into the navigator
 const AppNavigator = createStackNavigator(
     {
         Home: HomeScreen,
@@ -73,7 +77,10 @@ const AppNavigator = createStackNavigator(
         Recipe: RecipeScreen,
         About: AboutScreen,
         Dietary: DietaryScreen,
-        Steps: StepScreen
+        Steps: StepScreen,
+        Camera: CameraTest,
+        CameraMain: CameraMain,
+        CameraRecord: CameraRecordTest
     },
     {
         initialRouteName: "Home"

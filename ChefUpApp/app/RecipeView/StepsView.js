@@ -15,7 +15,8 @@ export default class StepsView extends React.Component {
         this.state = {
             data: [],
             noData: false,
-            loading: true
+            loading: true,
+            timerIDs: []
         };
 
         this.timerCountdown = this.timerCountdown.bind(this);
@@ -25,6 +26,17 @@ export default class StepsView extends React.Component {
     componentDidMount() {
 
         this.fetchData();
+
+    }
+
+    // Clear all set timers
+    //TODO: Put each timer in timerIDs array with all info about timer. make it cleaner. remove finished timers from array
+    componentWillUnmount() {
+
+        for( let timer of this.state.timerIDs) {
+            console.log('timer ' + timer + ' cleared');
+            clearInterval(timer);
+        }
 
     }
 
@@ -184,7 +196,12 @@ export default class StepsView extends React.Component {
                                                 let iTimer = i + 'TimerId';
                                                 let iStarted = i + "Started";
                                                 console.log('i=', i);
-                                                this.setState({[iTimer]: timerId, [i]: true, [iStarted]: true});
+
+                                                const {timerIDs} = this.state;
+                                                timerIDs.push(timerId);
+                                                console.log('new timer id pushed: ' + timerId);
+
+                                                this.setState({[iTimer]: timerId, [i]: true, [iStarted]: true, timerIDs});
                                             }}
                                         />
                                     </View>) : (<Text></Text>)
