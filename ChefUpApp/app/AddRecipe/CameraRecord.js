@@ -4,7 +4,7 @@ import { AppRegistry, StyleSheet, Text, View, TouchableOpacity, Alert } from 're
 import { Camera, Permissions } from 'expo';
 
 
-export default class CameraRecordTest extends React.Component {
+export default class CameraRecord extends React.Component {
 
     constructor(props) {
         super(props);
@@ -163,4 +163,4 @@ const styles = StyleSheet.create({
     }
 });
 
-AppRegistry.registerComponent('CameraRecordTest', () => CameraRecordTest);
+AppRegistry.registerComponent('CameraRecord', () => CameraRecord);

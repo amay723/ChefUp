@@ -8,9 +8,9 @@ import StepScreen from './app/RecipeView/StepsView'
 import AboutScreen from './app/About/About'
 import DietaryScreen from './app/DietaryRestrictions/DietaryRestrictions'
 
-import CameraTest from './app/CameraTest/CameraTest'
-import CameraRecordTest from './app/CameraTest/CameraRecordTest'
-import CameraMain from './app/CameraTest/CameraMain'
+import CameraPictureScreen from './app/AddRecipe/CameraPicture'
+import CameraRecordScreen from './app/AddRecipe/CameraRecord'
+import AddRecipeScreen from './app/AddRecipe/AddRecipe'
 
 class HomeScreen extends React.Component {
     render() {
@@ -78,9 +78,9 @@ const AppNavigator = createStackNavigator(
         About: AboutScreen,
         Dietary: DietaryScreen,
         Steps: StepScreen,
-        Camera: CameraTest,
-        CameraMain: CameraMain,
-        CameraRecord: CameraRecordTest
+        CameraPicture: CameraPictureScreen,
+        AddRecipe: AddRecipeScreen,
+        CameraRecord: CameraRecordScreen
     },
     {
         initialRouteName: "Home"

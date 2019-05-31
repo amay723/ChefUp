@@ -4,7 +4,7 @@ import { AppRegistry, StyleSheet, Text, View, TouchableOpacity } from 'react-nat
 import { Camera, Permissions } from 'expo';
 
 
-export default class CameraTest extends React.Component {
+export default class CameraPicture extends React.Component {
 
     constructor(props) {
         super(props)
@@ -146,4 +146,4 @@ const styles = StyleSheet.create({
     }
 });
 
-AppRegistry.registerComponent('CameraTest', () => CameraTest);
+AppRegistry.registerComponent('CameraPicture', () => CameraPicture);

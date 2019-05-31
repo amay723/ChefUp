@@ -16,7 +16,12 @@ ChefUp also comes in with built in step timers (which can be run concurrently), 
 
 ## Known Issues
 - Pages that do have extra ingredient information will sometimes not show the extra info, and need to be re-entered (sometimes several times) to display correctly.
+- AddRecipe page sometimes pops up error "unrecognized selector sent to instance", something to do with keyboard I think
 
+## TODO
+- Delete unused styles from page stylesheets
+- Way to indicate serving sizes for ingredients in AddRecipe page
+- API submission handling for new recipes
 
 ## How to Download & Run
 1. Make sure you have the latest version of node, yarn & expo installed (Mac install commands)

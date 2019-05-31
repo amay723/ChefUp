@@ -6,20 +6,27 @@ import { CheckBox } from 'react-native-elements'
 // Keyboard will not overlay selected text inputs
 import KeyboardShift from './KeyboardShift';
 
-// React likes each rendered item to have a unique key
-let uniqueSeed = 0;
-function nextUniqueKey() {
-    return uniqueSeed += 1;
-}
 
 //TODO: Merge CameraTest and CameraRecordTest into one file
 
-export default class CameraMain extends React.Component {
+//TODO: Put TextInput style into stylesheet so less repetitive code
 
-    // navigation screen title
-    static navigationOptions = {
-        title: 'Add New Recipe',
+export default class AddRecipe extends React.Component {
+
+    //TODO: onPress method of the button gives a warning, as its value is initially undefined (since it is run before
+    //TODO: componentDidMount which sets it. Find different way of doing this
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: 'Add New Recipe',
+            headerRight: (
+                <Button
+                    title="Submit"
+                    onPress={navigation.getParam('submit')}
+                />
+            ),
+        };
     };
+
 
     constructor(props) {
 
@@ -33,15 +40,19 @@ export default class CameraMain extends React.Component {
             recipeCategory: "",
             recipeDescription: "",
             mainPic: undefined,
-            stepPics: [],
+            stepPics: [undefined],
             tools: [""],
             ingredients: [""],
-            steps: [],
+            steps: [{info: "", timed: false, time: "0"}],
             difficulty: 1,
             time: "0"
         }
 
 
+    }
+
+    componentDidMount() {
+        this.props.navigation.setParams({ submit: this._submit });
     }
 
     //TODO: {idempotent: true} should make it so invalid paths do not cause errors but does not. Need to look into
@@ -97,6 +108,111 @@ export default class CameraMain extends React.Component {
         );
 
     }
+
+    // Check to see if all fields are filled out correctly
+    _submit = () => {
+
+        const {recipeName, recipeCategory, recipeDescription, time, mainPic, stepPics, tools, ingredients, steps} = this.state;
+
+        if( recipeName === "" ) {
+            Alert.alert(
+                'Form Not Completed',
+                'Recipe Name not filled out',
+                [
+                    {text: 'OK'}
+                ]
+            );
+        }
+        else if( recipeCategory === "") {
+            Alert.alert(
+                'Form Not Completed',
+                'Recipe Category not filled out',
+                [
+                    {text: 'OK'}
+                ]
+            );
+        }
+        else if( recipeDescription === "") {
+            Alert.alert(
+                'Form Not Completed',
+                'Recipe Description not filled out',
+                [
+                    {text: 'OK'}
+                ]
+            );
+        }
+        else if( time === "" ) {
+            Alert.alert(
+                'Form Not Completed',
+                'Total Time not filled out',
+                [
+                    {text: 'OK'}
+                ]
+            );
+        }
+        else if( mainPic === undefined) {
+            Alert.alert(
+                'Form Not Completed',
+                'Main Picture not set',
+                [
+                    {text: 'OK'}
+                ]
+            );
+        }
+        else if( stepPics.includes(undefined) ) {
+            Alert.alert(
+                'Form Not Completed',
+                'All Steps require images',
+                [
+                    {text: 'OK'}
+                ]
+            );
+        }
+        else if( tools.includes("") ) {
+            Alert.alert(
+                'Form Not Completed',
+                'All tools require names',
+                [
+                    {text: 'OK'}
+                ]
+            );
+        }
+        else if( ingredients.includes("") ) {
+            Alert.alert(
+                'Form Not Completed',
+                'All ingredients require names',
+                [
+                    {text: 'OK'}
+                ]
+            );
+        }
+        else {
+            for( let step of steps) {
+                if( step.info === "" ) {
+                    Alert.alert(
+                        'Form Not Completed',
+                        'All steps require descriptions',
+                        [
+                            {text: 'OK'}
+                        ]
+                    );
+                    break;
+                }
+                else if( step.timed && step.time === "") {
+                    Alert.alert(
+                        'Form Not Completed',
+                        'All timed steps require times',
+                        [
+                            {text: 'OK'}
+                        ]
+                    );
+                    break;
+                }
+            }
+        }
+
+
+    };
 
     render() {
 
@@ -172,7 +288,7 @@ export default class CameraMain extends React.Component {
                             <TextInput
                                 style={{
                                     borderWidth: 1,
-                                    height: 40,
+                                    height: 80,
                                     width: 200,
                                     margin: 10,
                                     padding: 10,
@@ -182,9 +298,9 @@ export default class CameraMain extends React.Component {
                                 value={this.state.recipeDescription}
                                 placeholder = "Enter Recipe Description"
                                 selectTextOnFocus={true}
-                                // multiline={true}
+                                multiline={true}
                                 numberOfLines={4}
-                                maxLength={50}
+                                maxLength={100}
                                 returnKeyType = "done"
                             />
 
@@ -228,7 +344,7 @@ export default class CameraMain extends React.Component {
                                 <Button
                                     title = "Change Picture"
                                     color = 'darkseagreen'
-                                    onPress={() => this.props.navigation.push('Camera', {
+                                    onPress={() => this.props.navigation.push('CameraPicture', {
                                         callback: this.setMainPic
                                     })}
                                 />
@@ -490,4 +606,4 @@ const styles = StyleSheet.create({
     }
 });
 
-AppRegistry.registerComponent('CameraMain', () => CameraMain);
+AppRegistry.registerComponent('AddRecipe', () => AddRecipe);

@@ -22,7 +22,7 @@ export default class RecipeMain extends React.Component {
             headerRight: (
                 <Button
                     title="Add Recipe"
-                    onPress={() => navigation.push('CameraMain')}
+                    onPress={() => navigation.push('AddRecipe')}
                 />
             ),
         };
